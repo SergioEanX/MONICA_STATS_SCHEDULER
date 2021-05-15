@@ -16,6 +16,7 @@
   "author": "Eng. Sergio Ferlito",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "chalk": "^4.1.1",
     "geolib": "^3.3.1",
     "mongodb": "^3.6.6",
