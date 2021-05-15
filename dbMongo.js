@@ -1,8 +1,6 @@
 const { MongoClient } = require("mongodb");
 const chalk = require("chalk");
 const info = chalk.keyword("white").bgGreen;
-const log = console.log;
-const er = chalk.keyword("white").bgRedBright;
 
 // exports.client = async () => {
 //   /**
@@ -25,7 +23,7 @@ const er = chalk.keyword("white").bgRedBright;
 //     // Connect to the MongoDB cluster
 //     const conn = await client.connect();
 //     const { host, port } = conn.s.options.servers[0];
-//     log(
+//     console.log(
 //       info(
 //         `Successfully connected to mongodb host ${host} port ${port} replica set ${conn.s.options.replicaSet}`
 //       )
@@ -34,7 +32,7 @@ const er = chalk.keyword("white").bgRedBright;
 //   } catch (err) {
 //     // Close the connection to the MongoDB cluster and exit App
 //     await client.close();
-//     log(er(`An error occured ${err}\nEXITING....`));
+//     console.log(er(`An error occured ${err}\nEXITING....`));
 //     process.exit(1);
 //   }
 // };
@@ -60,7 +58,7 @@ class db {
       // Connect to the MongoDB cluster
       const conn = await this.client.connect();
       const { host, port } = conn.s.options.servers[0];
-      log(
+      console.log(
         info(
           `Successfully connected to mongodb host ${host} port ${port} replica set ${conn.s.options.replicaSet}`
         )
@@ -68,7 +66,7 @@ class db {
     } catch (err) {
       // Close the connection to the MongoDB cluster and exit App
       await this.client.close();
-      log(er(`An error occured ${err}\nEXITING....`));
+      console.log(er(`An error occured ${err}\nEXITING....`));
       process.exit(1);
     }
   }

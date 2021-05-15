@@ -1,3 +1,4 @@
+const { chalk, info, er } = require("./utils/colored_console");
 // load function to compute distances between GeoJSON points uses (geolib)
 const { computeDistance } = require("./calcDistanceSession");
 // load aggregation pipelines
@@ -92,8 +93,8 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats, client) => {
     //      { id: ObjectId("6040ad220687160ffb817825"), distance: 13 } ],
     //   totalDistance: 10395 }
 
-    // log(chalk.greenBright(JSON.stringify(doc, null, 2)));
+    // console.log(chalk.greenBright(JSON.stringify(doc, null, 2)));
   }
   await client.close();
-  log(info(`Connection to db closed at ${new Date()}`));
+  console.log(info(`Connection to db closed at ${new Date()}`));
 };
