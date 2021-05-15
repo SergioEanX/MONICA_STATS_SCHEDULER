@@ -1,0 +1,29 @@
+{
+  "name": "monica-stats-scheduled",
+  "version": "1.0.0",
+  "description": "scheduled app to retrieve stats from monica_calibrated collection",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "monica",
+    "stats",
+    "scheduled",
+    "node-schedule"
+  ],
+  "author": "Eng. Sergio Ferlito",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "geolib": "^3.3.1",
+    "mongodb": "^3.6.6",
+    "node-schedule": "^2.0.0",
+    "pino": "^6.11.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.26.0",
+    "prettier": "^2.3.0"
+  }
+}
