@@ -5,7 +5,7 @@ const { chalk, info, er } = require("./utils/colored_console");
 // load utility function to GET/SET date last RUN
 const { getOrSetStartDate } = require("./utils/handleStartDate");
 // load
-const { updateCollStats } = require("./getMONICAStats");
+const { updateCollStats } = require("./populateMONICAStats");
 exports.job = async () => {
   const startDate = getOrSetStartDate();
   // retrive client from cb class
@@ -22,9 +22,10 @@ exports.job = async () => {
     console.log(chalk.white.bgBlueBright(`Scheduled ran at ${new Date()}`));
     // start populating  stats collection
     // close Mongodb collection at the end
-    await updateCollStats(null, coll, collMonicaStats, client);
 
-    //await updateCollStats(startDate, coll, collMonicaStats, client);
+    //await updateCollStats(null, coll, collMonicaStats, client);
+
+    await updateCollStats(startDate, coll, collMonicaStats, client);
 
     // close MongoDB connection after ran schedule
     if (client) {
