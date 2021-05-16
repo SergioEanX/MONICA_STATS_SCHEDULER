@@ -7,14 +7,17 @@ const { job } = require("./jobs");
 const { info } = require("./utils/colored_console");
 
 // define rule to schedule App at specific minutes every day
-rule.minute = [0, 43, 33, 34, 35, 36];
+rule.minute = [0, 43, 33, 44, 45, 46];
 
 console.log(info(`App started at ${new Date()}!!`));
 
-// define schedule
-schedule.scheduleJob(rule, async () => {
-  job();
-});
+// // define schedule
+// schedule.scheduleJob(rule, async () => {
+//   job();
+// });
+
+// to run immediately
+(async () => job())();
 
 // https://docs.mongodb.com/drivers/node/fundamentals/crud/read-operations/cursor/
 // https://www.npmjs.com/package/bree (other scheduler for node)
