@@ -12,7 +12,15 @@ exports.pipelineStatsSessions = [
       },
       // create an array of ObjectID relating to id of documents in
       // monica_calibrated collection belonging to each User
-      sessionsID: { $addToSet: { id: "$_id" } },
+      sessionsID: {
+        $addToSet: {
+          id: "$_id",
+          Device: "$DeviceAFE",
+          start: "$StartDate",
+          end: "$EndDate",
+          diff: { $subtract: ["$EndDate", "$StartDate"] },
+        },
+      },
     },
   },
   {
