@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { chalk, info, er } = require("./utils/colored_console");
 // load function to compute distances between GeoJSON points uses (geolib)
 const { computeDistance } = require("./calcDistanceSession");
@@ -5,8 +6,7 @@ const { computeDistance } = require("./calcDistanceSession");
 const { pipelineStatsSessions, pipelineSumDistances } = require("./pipelines");
 // to crypt email
 const bcrypt = require("bcrypt");
-// bcrypt salt
-const bcryptSalt = process.env.BCRYPT_SALT;
+
 // define if crypt or not email
 const showEmail = process.env.SHOW_EMAIL;
 
@@ -14,7 +14,7 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
   // is startDate is not undefined, i.e. a JSON file with
   // the last ran datetime exists
   // add at the beginning of the pipeline a match stage
-  if (startDate) {
+  if (startDate && !Boolean(process.env.RETRIEVE_ALL)) {
     pipelineStatsSessions.unshift({
       $match: {
         StartDate: { $gt: startDate },
@@ -26,10 +26,13 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
 
   // get cursor from aggregation
   const cursor = await coll.aggregate(pipelineStatsSessions);
+  // const testResult = await cursor.toArray();
+  // console.log(JSON.stringify(testResult));
 
   // async trasverse docs from cursor
   for await (const doc of cursor) {
-    const hashEmail = await bcrypt.hash(doc.user, Number(bcryptSalt));
+    console.log(doc.user);
+    const hashEmail = await bcrypt.hash(doc.user, 5);
     let message;
     if (showEmail) {
       message = doc.user;
@@ -133,6 +136,7 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
       await collMonicaStats.updateOne(query, {
         $set: {
           totalDistance: arrResultDist[0].totDistance,
+          totalDiff: arrResultDist[0].totDiff,
         },
       });
     }

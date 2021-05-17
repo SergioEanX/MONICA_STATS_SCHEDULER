@@ -48,6 +48,15 @@ exports.pipelineSumDistances = [
           },
         },
       },
+      totTimeMS: {
+        $reduce: {
+          input: "$sessionsID",
+          initialValue: 0,
+          in: {
+            $add: ["$$value", "$$this.diff"],
+          },
+        },
+      },
     },
   },
 ];
