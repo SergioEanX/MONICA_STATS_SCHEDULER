@@ -7,7 +7,7 @@ const { job } = require("./jobs");
 const { info } = require("./utils/colored_console");
 
 // define rule to schedule App at specific minutes every day
-rule.minute = [0, 43, 33, 44, 45, 46];
+rule.minute = [0, 15, 30, 45];
 
 console.log(info(`App started at ${new Date()}!!`));
 
