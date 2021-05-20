@@ -34,29 +34,32 @@ exports.pipelineStatsSessions = [
   },
 ];
 
-exports.pipelineSumDistances = [
-  // for each element in the array of collection monica_stats.sessionsID
-  // accumulate the distance property to provide totDistance
-  {
-    $project: {
-      totDistance: {
-        $reduce: {
-          input: "$sessionsID",
-          initialValue: 0,
-          in: {
-            $add: ["$$value", "$$this.distance"],
+exports.pipelineSumDistances = (userEmail) => {
+  return [
+    // for each element in the array of collection monica_stats.sessionsID
+    // accumulate the distance property to provide totDistance
+    { $match: { user: userEmail } },
+    {
+      $project: {
+        totDistance: {
+          $reduce: {
+            input: "$sessionsID",
+            initialValue: 0,
+            in: {
+              $add: ["$$value", "$$this.distance"],
+            },
           },
         },
-      },
-      totTimeMS: {
-        $reduce: {
-          input: "$sessionsID",
-          initialValue: 0,
-          in: {
-            $add: ["$$value", "$$this.diff"],
+        totTimeMS: {
+          $reduce: {
+            input: "$sessionsID",
+            initialValue: 0,
+            in: {
+              $add: ["$$value", "$$this.diff"],
+            },
           },
         },
       },
     },
-  },
-];
+  ];
+};
