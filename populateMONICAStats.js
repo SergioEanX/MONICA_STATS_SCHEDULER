@@ -1,20 +1,27 @@
 require("dotenv").config();
+const { formatDistance } = require("date-fns");
+const { it } = require("date-fns/locale");
+const moment = require("moment");
+
 const { chalk, info, er } = require("./utils/colored_console");
 // load function to compute distances between GeoJSON points uses (geolib)
 const { computeDistance } = require("./calcDistanceSession");
 // load aggregation pipelines
 const { pipelineStatsSessions, pipelineSumDistances } = require("./pipelines");
+
 // to crypt email
 const bcrypt = require("bcrypt");
 
 // define if crypt or not email
 const showEmail = process.env.SHOW_EMAIL;
+const checkAllDB = Boolean(process.env.RETRIEVE_ALL);
 
 exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
   // is startDate is not undefined, i.e. a JSON file with
-  // the last ran datetime exists
+  // the last ran datetime exists and
+  // RETRIEVE_ALL===false in .env file
   // add at the beginning of the pipeline a match stage
-  if (startDate && !Boolean(process.env.RETRIEVE_ALL)) {
+  if (startDate && !checkAllDB) {
     pipelineStatsSessions.unshift({
       $match: {
         StartDate: { $gt: startDate },
@@ -67,13 +74,27 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
         element.distance = distance;
       })
     );
+    // // sum up all sessions distances
+    // const totalSessionsDistance = doc.sessionsID.reduce((acc, curr) => {
+    //   acc = acc + curr.distance;
+    //   return acc;
+    // }, 0);
+    // // add property totalDistance
+    // updates.totalDistance = totalSessionsDistance;
+
     // sum up all sessions distances
-    const totalSessionsDistance = doc.sessionsID.reduce((acc, curr) => {
-      acc = acc + curr.distance;
-      return acc;
-    }, 0);
+    const totals = doc.sessionsID.reduce(
+      (acc, curr) => {
+        acc["dist"] = acc["dist"] + curr.distance;
+        acc["time"] = acc["time"] + curr.diff;
+        return acc;
+      },
+      { dist: 0, time: 0 }
+    );
     // add property totalDistance
-    updates.totalDistance = totalSessionsDistance;
+    updates.totalDistance = totals.dist;
+    updates.totalTimeIT = formatDistance(0, totals.time, { locale: it });
+    updates.totalTimeEN = formatDistance(0, totals.time);
 
     // add to previously value saved if it exists otherwise
     // set newly computed doc
@@ -117,28 +138,35 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
     } else {
       update = { $set: updates };
     }
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // update monica_stats
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const result = await collMonicaStats.updateOne(query, update, options);
 
     // result.upsertedCount===0 means that a doc already exists
     // in this case the totalDistance has to be updated
     if (result.upsertedCount === 0) {
       // add a first $match stage to filter by user email
-      pipelineSumDistances.unshift({
-        $match: { user: doc.user },
-      });
+      const pipeline = pipelineSumDistances(user);
+
       // first compute sum of all distances in array
       const arrResultDist = await collMonicaStats
-        .aggregate(pipelineSumDistances) // returns a cursor
+        .aggregate(pipeline) // returns a cursor
         .toArray(); // convert to Array as the result of agg is a single value/doc
 
+      const { totTimeMS, totDistance } = arrResultDist[0];
+      console.log(`stats: ${JSON.stringify(arrResultDist[0], null, 2)}`);
       // updates field totalDistance
-      await collMonicaStats.updateOne(query, {
-        $set: {
-          totalDistance: arrResultDist[0].totDistance,
-          totalDiff: arrResultDist[0].totDiff,
-        },
-      });
+      await collMonicaStats.updateOne(
+        { user: user },
+        {
+          $set: {
+            totalDistance: totDist,
+            totalTimeIT: formatDistance(0, totMS, { locale: it }),
+            totalTimeEn: formatDistance(0, totMS),
+          },
+        }
+      );
     }
     // each doc in monica_stats collection is
     //   { _id: ObjectId("609f72d8cad27b6e7f263112"),
