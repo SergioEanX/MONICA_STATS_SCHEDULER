@@ -28,7 +28,7 @@ exports.job = async () => {
     await updateCollStats(startDate, coll, collMonicaStats, client);
 
     // close MongoDB connection after ran schedule
-    if (client) {
+    if (client !== undefined) {
       await client.close();
       console.log(info(`Connection to db closed at ${new Date()}`));
     }
@@ -36,7 +36,9 @@ exports.job = async () => {
   } catch (error) {
     //Close the connection to the MongoDB cluster and exit App
     console.log(er(`An error occured ${error}\nEXITING....`));
-    await this.client.close();
+    if (client !== undefined) {
+      await this.client.close();
+    }
     process.exit(1);
   }
 };
