@@ -32,7 +32,9 @@ class db {
     } catch (err) {
       // Close the connection to the MongoDB cluster and exit App
       console.log(er(`An error occured ${err}\nEXITING....`));
-      await this.client.close();
+      if (this.client !== undefined) {
+        await this.client.close();
+      }
       process.exit(1);
     }
   }
