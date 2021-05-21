@@ -5,7 +5,7 @@ const { chalk, info, er } = require("./utils/colored_console");
 // load utility function to GET/SET date last RUN
 const { getOrSetStartDate } = require("./utils/handleStartDate");
 // load
-const { updateCollStats } = require("./populateMONICAStats");
+const { updateCollStats } = require("./updateCollMONICAStats");
 exports.job = async () => {
   const startDate = getOrSetStartDate();
   // retrive client from cb class
