@@ -17,7 +17,7 @@ const showEmail = process.env.SHOW_EMAIL;
 const checkAllDB = process.env.RETRIEVE_ALL === "true";
 
 exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
-  // is startDate is not undefined, i.e. a JSON file with
+  // if startDate is not undefined, i.e. a JSON file with
   // the last ran datetime exists and
   // RETRIEVE_ALL===false in .env file
   // add at the beginning of the pipeline a $match stage
@@ -26,11 +26,12 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
     pipelineStatsSessions.unshift({
       $match: {
         StartDate: { $gt: startDate },
-        //User: "ferlito.sergio@gmail.com",
+        //User: "savdevito@gmail.com",
         //StartDate: new Date("Thu, 04 Mar 2021 11:02:26 GMT"),
       },
     });
   }
+  console.log(JSON.stringify(pipelineStatsSessions, null, 2));
 
   // get cursor from aggregation
   const cursor = await coll.aggregate(pipelineStatsSessions);
@@ -63,6 +64,7 @@ exports.updateCollStats = async (startDate, coll, collMonicaStats) => {
 
     // find record by user email from monica_calibrated collection
     const query = { user: user };
+
     // compute in parallel all distances for each session of each user
     await Promise.all(
       doc.sessionsID.map(async (element) => {
