@@ -22,7 +22,7 @@ exports.updateMonicaStats = async (
   if (result.upsertedCount === 0) {
     // add a first $match stage to filter by user email
     const pipeline = pipelineSumDistances(userEmail);
-
+    console.log(JSON.stringify(pipeline, null, 2));
     messageDone = `Done updating user: ${userEmail}`;
 
     // first compute sum of all distances in array
