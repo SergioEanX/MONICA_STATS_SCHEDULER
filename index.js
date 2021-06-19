@@ -8,8 +8,9 @@ const { info } = require("./utils/colored_console");
 
 const { logger } = require("./utils/logger");
 
+const linspace = require("@stdlib/math/utils/linspace");
 // define rule to schedule App at specific minutes every day
-rule.minute = [07, 15, 30, 59];
+rule.minute = linspace(0, 55, 5); //[06, 15, 30, 59];
 
 console.log(info(`App started at ${new Date()}!!`));
 logger.info(`Schedule run at ${new Date()}`);
