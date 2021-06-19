@@ -16,19 +16,20 @@
   "author": "Eng. Sergio Ferlito",
   "license": "MIT",
   "dependencies": {
+    "@stdlib/stdlib": "0.0.94",
     "bcrypt": "^5.0.1",
     "chalk": "^4.1.1",
-    "date-fns": "^2.21.3",
+    "date-fns": "^2.22.1",
     "dotenv": "^9.0.2",
     "geolib": "^3.3.1",
     "moment": "^2.29.1",
-    "mongodb": "^3.6.6",
+    "mongodb": "^3.6.9",
     "node-schedule": "^2.0.0",
     "pino": "^6.11.3",
     "pino-pretty": "^4.8.0"
   },
   "devDependencies": {
-    "eslint": "^7.26.0",
-    "prettier": "^2.3.0"
+    "eslint": "^7.29.0",
+    "prettier": "^2.3.1"
   }
 }
