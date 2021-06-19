@@ -44,6 +44,7 @@ exports.updateMonicaStats = async (
         },
       },
     ]);
+    messageDone = `Done updating EXISTING user: ${userEmail}`;
   } else {
     // update numSessions only
     // [] are required to allow $size query
