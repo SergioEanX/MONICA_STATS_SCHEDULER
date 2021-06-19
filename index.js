@@ -9,19 +9,23 @@ const { info } = require("./utils/colored_console");
 const { logger } = require("./utils/logger");
 
 // define rule to schedule App at specific minutes every day
-rule.minute = [0, 39, 41, 47];
+rule.minute = [07, 15, 30, 59];
 
 console.log(info(`App started at ${new Date()}!!`));
-
 logger.info(`Schedule run at ${new Date()}`);
 
 // to run immediately
-// (async () => job())();
+const runNow = false;
 
-//define schedule
-schedule.scheduleJob(rule, async () => {
-  job();
-});
+// run immediately or on schedule
+if (runNow) {
+  (async () => job())();
+} else {
+  //define schedule
+  schedule.scheduleJob(rule, async () => {
+    job();
+  });
+}
 
 process.on("uncaughtException", (err) => {
   // Handle the error safely
