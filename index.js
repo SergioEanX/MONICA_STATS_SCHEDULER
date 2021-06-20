@@ -7,10 +7,10 @@ const { job } = require("./jobs");
 const { info } = require("./utils/colored_console");
 
 const { logger } = require("./utils/logger");
-
-const linspace = require("@stdlib/math/utils/linspace");
+var _ = require("lodash");
 // define rule to schedule App at specific minutes every day
-rule.minute = linspace(0, 55, 5); //[06, 15, 30, 59];
+
+rule.minute = _.range(0, 59, 5); //[06, 15, 30, 59];
 
 console.log(info(`App started at ${new Date()}!!`));
 logger.info(`Schedule run at ${new Date()}`);
